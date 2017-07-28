@@ -14,11 +14,8 @@ class WidgetsController < ApplicationController
   # GET /widgets/1.json
   def show
     @widget = Widget.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @widget }
-    end
+    fresh_when(@widget, public: true)
+    expires_now
   end
 
   # GET /widgets/new
