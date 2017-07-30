@@ -3,6 +3,8 @@ require 'benchmark'
 class WidgetsController < ApplicationController
 
   before_filter :set_cache_headers, :only => [:dumb, :plucked, :poorly_fragment_cached, :smartly_fragment_cached]
+  before_filter :set_cache_headers2, :only => [:dumb_304, :smart_304]
+  before_filter :set_cache_headers3, :only => [:smartest_304]
   
   def dumbest
     Benchmark.bm do |bm|
@@ -59,6 +61,10 @@ class WidgetsController < ApplicationController
       end
     end
   end
+
+  def smartest_304
+    smart_304
+  end
   
   def show
     Benchmark.bm do |bm|
@@ -74,108 +80,12 @@ class WidgetsController < ApplicationController
     response.cache_control[:no_cache] = true
     response.cache_control[:max_age] = 0
   end
+  def set_cache_headers2
+    response.cache_control[:public] = true
+    response.cache_control[:no_cache] = true
+  end
+  def set_cache_headers3
+    response.cache_control[:public] = true
+    response.cache_control[:max_age] = 30    
+  end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-__END__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def show_goofy
-  @widget = Widget.find(1)
-
-  @widget.touch if params[:touch] = 't'
-  
-  request.session_options[:skip] = true     # remove Set-Cookie
-  response.cache_control[:no_cache] = 'no-cache' unless params[:vis] || params[:ma]
-  response.cache_control[:public] = public?
-  response.cache_control[:max_age] = max_age
-  handle_conditional_get
-end
-
-private
-def public?
-  params[:vis] == 'private' ? false : true
-end
-
-def max_age
-  ma = params[:ma].try(:to_i) || 0
-end
-
-def handle_conditional_get
-  fresh_when(@widget) if params[:fw] == 't'
-end
-

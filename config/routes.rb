@@ -8,6 +8,7 @@ CachingDemo::Application.routes.draw do
   match 'dumb_304' => 'widgets#dumb_304'
   match 'smart_304' => 'widgets#smart_304'
   # talk about Fastly / Rack-Cache
+  match 'smartest_304' => 'widgets#smartest_304'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
