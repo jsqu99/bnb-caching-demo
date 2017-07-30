@@ -13,7 +13,13 @@
 	<p/>
 
 	<p>
-	<a href="/plucked">Full end to end with no thought with respect to performance...other than ActiveRecord (plucked)</a>
+		<a href="/plucked">Full end to end with no thought with respect to performance...other than ActiveRecord (plucked)</a>
+		<ul>
+			<li>Look how fast this got!</li>
+			<li>We aren't doing any caching at all!</li>
+			<li>We aren't wasting time fetching/loading AR objects!</li>
+		</ul>
+		
 	</p>
 
 	<p>
@@ -60,6 +66,14 @@
     </ul>
 	</p>
 
+	<p>
+		<a href="http://bnb-caching-demo.herokuapp.com.global.prod.fastly.net/smartest_304">Fastly</a>
+		<ul>
+			<li>After we expire, note how we aren't hitting heroku!</li>
+		</ul>
+	</p>
+
+	
 <%= yield %>
 
 </body>
