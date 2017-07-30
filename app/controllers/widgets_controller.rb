@@ -2,9 +2,9 @@ require 'benchmark'
 
 class WidgetsController < ApplicationController
 
-  before_filter :set_cache_headers
+  before_filter :set_cache_headers, :only => [:dumb, :plucked, :poorly_fragment_cached, :smartly_fragment_cached]
   
-  def index
+  def dumbest
     Benchmark.bm do |bm|
       bm.report do
         @widgets = Widget.all
@@ -13,29 +13,49 @@ class WidgetsController < ApplicationController
     end
   end
 
-  def plucked_index
+  def plucked
     Benchmark.bm do |bm|
       bm.report do
         @names = Widget.pluck(:name)
-        render 'widgets/plucked_index'
+        render 'widgets/plucked'
       end
     end
   end
   
-  def poorly_fragment_cached_index
+  def poorly_fragment_cached
     Benchmark.bm do |bm|
       bm.report do
         @widgets = Widget.all
-        render 'widgets/poorly_fragment_cached_index'
+        render 'widgets/poorly_fragment_cached'
       end
     end
   end
 
-  def smartly_fragment_cached_index
+  def smartly_fragment_cached
     Benchmark.bm do |bm|
       bm.report do
         @widgets = Widget.scoped
-        render 'widgets/smartly_fragment_cached_index'
+        render 'widgets/smartly_fragment_cached'
+      end
+    end
+  end
+
+  def dumb_304
+    Benchmark.bm do |bm|
+      bm.report do
+        @widgets = Widget.all
+        render 'widgets/index'
+      end
+    end
+  end
+
+  def smart_304
+    Benchmark.bm do |bm|
+      bm.report do
+        if stale?(last_modified: Widget.order(:updated_at).last.updated_at)
+          @widgets = Widget.all
+          render 'widgets/index'
+        end
       end
     end
   end

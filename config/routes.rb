@@ -1,9 +1,13 @@
 CachingDemo::Application.routes.draw do
   resources :widgets
 
-  match 'smartly_fragment_cached_index' => 'widgets#smartly_fragment_cached_index'
-  match 'poorly_fragment_cached_index' => 'widgets#poorly_fragment_cached_index'
-  match 'plucked_index' => 'widgets#plucked_index'
+  match 'dumbest' => 'widgets#dumbest'
+  match 'plucked' => 'widgets#plucked'
+  match 'poorly_fragment_cached' => 'widgets#poorly_fragment_cached'
+  match 'smartly_fragment_cached' => 'widgets#smartly_fragment_cached'
+  match 'dumb_304' => 'widgets#dumb_304'
+  match 'smart_304' => 'widgets#smart_304'
+  # talk about Fastly / Rack-Cache
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -54,7 +58,7 @@ CachingDemo::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => 'widgets#index'
+  root :to => 'widgets#dumbest'
 
   # See how all your routes lay out with "rake routes"
 
