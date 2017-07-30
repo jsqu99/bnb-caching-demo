@@ -1,80 +1,161 @@
+require 'benchmark'
+
 class WidgetsController < ApplicationController
-  # GET /widgets
-  # GET /widgets.json
+
+  before_filter :set_cache_headers
+  
   def index
-    @widgets = Widget.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @widgets }
+    Benchmark.bm do |bm|
+      bm.report do
+        @widgets = Widget.all
+        render 'widgets/index'
+      end
     end
   end
 
-  # GET /widgets/1
-  # GET /widgets/1.json
+  def plucked_index
+    Benchmark.bm do |bm|
+      bm.report do
+        @names = Widget.pluck(:name)
+        render 'widgets/plucked_index'
+      end
+    end
+  end
+  
+  def poorly_fragment_cached_index
+    Benchmark.bm do |bm|
+      bm.report do
+        @widgets = Widget.all
+        render 'widgets/poorly_fragment_cached_index'
+      end
+    end
+  end
+
+  def smartly_fragment_cached_index
+    Benchmark.bm do |bm|
+      bm.report do
+        @widgets = Widget.scoped
+        render 'widgets/smartly_fragment_cached_index'
+      end
+    end
+  end
+  
   def show
-    @widget = Widget.find(params[:id])
-    fresh_when(@widget, public: true)
-    expires_now
-  end
-
-  # GET /widgets/new
-  # GET /widgets/new.json
-  def new
-    @widget = Widget.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @widget }
-    end
-  end
-
-  # GET /widgets/1/edit
-  def edit
-    @widget = Widget.find(params[:id])
-  end
-
-  # POST /widgets
-  # POST /widgets.json
-  def create
-    @widget = Widget.new(params[:widget])
-
-    respond_to do |format|
-      if @widget.save
-        format.html { redirect_to @widget, notice: 'Widget was successfully created.' }
-        format.json { render json: @widget, status: :created, location: @widget }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @widget.errors, status: :unprocessable_entity }
+    Benchmark.bm do |bm|
+      bm.report do
+        @widget = Widget.find(params[:id])
       end
     end
   end
 
-  # PUT /widgets/1
-  # PUT /widgets/1.json
-  def update
-    @widget = Widget.find(params[:id])
-
-    respond_to do |format|
-      if @widget.update_attributes(params[:widget])
-        format.html { redirect_to @widget, notice: 'Widget was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @widget.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /widgets/1
-  # DELETE /widgets/1.json
-  def destroy
-    @widget = Widget.find(params[:id])
-    @widget.destroy
-
-    respond_to do |format|
-      format.html { redirect_to widgets_url }
-      format.json { head :no_content }
-    end
+  private
+  def set_cache_headers
+    response.cache_control[:public] = false
+    response.cache_control[:no_cache] = true
+    response.cache_control[:max_age] = 0
   end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+__END__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def show_goofy
+  @widget = Widget.find(1)
+
+  @widget.touch if params[:touch] = 't'
+  
+  request.session_options[:skip] = true     # remove Set-Cookie
+  response.cache_control[:no_cache] = 'no-cache' unless params[:vis] || params[:ma]
+  response.cache_control[:public] = public?
+  response.cache_control[:max_age] = max_age
+  handle_conditional_get
+end
+
+private
+def public?
+  params[:vis] == 'private' ? false : true
+end
+
+def max_age
+  ma = params[:ma].try(:to_i) || 0
+end
+
+def handle_conditional_get
+  fresh_when(@widget) if params[:fw] == 't'
+end
+

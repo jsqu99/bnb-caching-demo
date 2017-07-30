@@ -1,6 +1,9 @@
 CachingDemo::Application.routes.draw do
   resources :widgets
 
+  match 'smartly_fragment_cached_index' => 'widgets#smartly_fragment_cached_index'
+  match 'poorly_fragment_cached_index' => 'widgets#poorly_fragment_cached_index'
+  match 'plucked_index' => 'widgets#plucked_index'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
