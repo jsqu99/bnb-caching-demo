@@ -22,7 +22,7 @@
 			<li>It's still slow!!!!</li>
 			<li>We are still wasting time fetching/loading AR objects!</li>
 		</ul>
-	</p>>
+	</p>
 
 	<p>
 		<a href="/smartly_fragment_cached">Let's add sanity to our AR load</a>
@@ -30,35 +30,35 @@
 			<li>It's now fast!</li>
 			<li>Using lazy loading to make sure we do the minimum amount of work before utilizing our cache</li>
 		</ul>			
-	</p>>
+	</p>
 
 	<p>
 		<a href="/dumb_304">Let's introduce HTTP caching - Conditional Gets, but do it poorly</a>
 		<ul>
-			<li>a href="/dumb_304.png">Sequence diagram</a></li>
+			<li><a href="/dumb_304.png">Sequence diagram</a></li>
 			<li>It's still slow!!!!</li>
 			<li>We are still wasting time creating all the content on the server, hashing it in order to create the etag/last_modified, and at the last minute, saying "nevermind" after we compare w/ the inbound hash</li>
     </ul>
-	</p>>
+	</p>
 
 	<p>
 		<a href="/smart_304">Let's introduce HTTP caching - Conditional Gets, but done right</a>
 		<ul>
-			<li>a href="/smart_304.png">Sequence diagram</a></li>
+			<li><a href="/smart_304.png">Sequence diagram</a></li>
 			<li>It's really fast!</li>
 			<li>We are quickly creating/comparing the etag/last_modified and sending a 304</li>
     </ul>
-	</p>>
+	</p>
 
 	<p>
 		<a href="/smartest_304">removing "Cache-Control: no-cache", Adding Expires</a>
 		<ul>
-			<li>a href="/smartest_304.png">Sequence diagram</a></li>
+			<li><a href="/smartest_304.png">Sequence diagram</a></li>
 			<li>It's super-duper-crazy-riduculous fast!</li>
 			<li>Because we've said "no matter what, consider this content valid for a set period of time", we can just load it from the browser cache (or any cache)</li>
 			<li>Once we've reached the expiration time, we revert to the 'if modified' (304) scenario, in which case our middleman has stored our page, and can give us our 304 without going to the rails server</li>
     </ul>
-	</p>>
+	</p>
 
 <%= yield %>
 
